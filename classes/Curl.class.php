@@ -40,7 +40,7 @@ class Curl {
                 'Accept-Charset: ISO-8859-2,utf-8;q=0.7,*;q=0.7',
                 // 'Keep-Alive: 115',
                 'Connection: keep-alive',
-                // 'Content-Type: application/x-www-form-urlencoded',
+                'Content-Type: application/json',
                 'Pragma: no-cache',
                 'Cache-Control: max-age=0'
             ),
@@ -189,36 +189,12 @@ class Curl {
         $this->_url = $val;
     }
 
-    public function setPost ($val) {
-        if (empty ($val)) {
-            curl_setopt ($this->_ch, CURLOPT_HTTPGET, 1);
-            $this->_post = null;
-        } else {
-            curl_setopt ($this->_ch, CURLOPT_POST, 1);
-            if (is_array ($val)) {
-                curl_setopt ($this->_ch, CURLOPT_POSTFIELDS, http_build_query ($val));
-                $this->_post = http_build_query ($val);
-            } else {
-                curl_setopt ($this->_ch, CURLOPT_POSTFIELDS, $val);
-                $this->_post = $val;
-            }
+    public function setBody ($method, $body) {
+        curl_setopt ($this->_ch, CURLOPT_CUSTOMREQUEST, $method);
+        if ($body) {  
+          curl_setopt ($this->_ch, CURLOPT_POSTFIELDS, $body);
         }
-    }
-
-    public function setPut ($val) {
-        if (empty ($val)) {
-            curl_setopt ($this->_ch, CURLOPT_HTTPGET, 1);
-            $this->_post = null;
-        } else {
-            curl_setopt ($this->_ch, CURLOPT_CUSTOMREQUEST, 'PUT');
-            if (is_array ($val)) {
-                curl_setopt ($this->_ch, CURLOPT_POSTFIELDS, http_build_query ($val));
-                $this->_post = http_build_query ($val);
-            } else {
-                curl_setopt ($this->_ch, CURLOPT_POSTFIELDS, $val);
-                $this->_post = $val;
-            }
-        }
+        $this->_post = $body;
     }
 }
 

@@ -2,7 +2,9 @@
 **AlwaysForge** is PHP forging fail-over for **Lisk** cryptocurrency. It will monitor all your nodes in real-time and switch forging to best server available. It uses active (maybe a little too aggressive) approach and best practices.
 
 ## Version:
-`1.0.0`
+`2.0.0`
+This version **works only with the Lisk Core 1.0.0 codebase**, starting with Version 1.0.0-beta.9 (currently running in Lisk Betanet)
+For older Lisk versions 0.9.x (Mainnet & Testnet) please use the previous always-forge version 1.0 from 4miners https://github.com/4miners/always-forge
 
 ## Dependencies:
 Script require **PHP** with **cURL** support and **Cron**. If you want to run it on hosting instead of VPS - one with **SLA 99.99%** is highly recommended.
@@ -11,7 +13,7 @@ Script require **PHP** with **cURL** support and **Cron**. If you want to run it
 **Remember to add your monitor's server IP to lisk whitelist (for API and forging)!**
 
 ```
-git clone https://github.com/4miners/always-forge
+git clone https://github.com/TheGoldenEye/always-forge
 cd always-forge
 cp config.json.example config.json
 ```
@@ -27,20 +29,22 @@ Edit `config.json` to your needs:
     "delegate": {
         "address": "delegate_address", // Your delegate address
         "publicKey": "delegate_publicKey", // Your delegate public key
-        "secret": "delegate_secret" // Your delegate secret
+        "password": "delegate_password" // The password with which your delegate secret was encrypted
     },
     // List of servers, first server will have highest priority, last - lowest priority
-    // Each server must have unique name! For your delegate security HTTPS connection is forced!
+    // Each server must have unique name! Set 'scheme' to http or https.
     "servers": [
         {
-            "name": "mainnet-1 #1",
+            "name": "node1",
+            "scheme": "http",
             "ip": "127.0.0.1",
-            "port": 8000
+            "port": 5000
         },
         {
-            "name": "mainnet-1 #2",
-            "ip": "127.0.0.1",
-            "port": 8001
+            "name": "node2",
+            "scheme": "http",
+            "ip": "a.b.c.d",
+            "port": 5000
         }
     ]
 }
@@ -55,5 +59,8 @@ If it works - add to your crontab `monitor_always_forge.sh` to run every minute,
 * * * * * bash /home/lisk/always-forge/monitor_always_forge.sh
 ```
 
-##Enjoy increase of your delegate productivity. :)
-Donation address: `16010222169256538112L`
+## Authors
+- Goldeneye
+- Mariusz Serek (4miners)
+
+**Many thanks to 4miners for his great work on always-forge !!!**

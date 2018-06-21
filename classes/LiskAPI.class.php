@@ -23,7 +23,7 @@ class LiskAPI {
             return false;
         }
         $json = json_decode($result);
-        if (!isset ($json) || !isset ($json->success) || !$json->success) {
+        if (!isset ($json) || !isset ($json->data) || !$json->data) {
             return false;
         }
         Logger::log (Logger::DEBUG, "[{$server->name}] " . $result);
@@ -31,38 +31,32 @@ class LiskAPI {
     }
 
     public function getStatus ($server) {
-        $url = "https://{$server->ip}:{$server->port}/api/loader/status/sync";
-        $this->_curl->setPost (null);
+        $url = "{$server->scheme}://{$server->ip}:{$server->port}/api/node/status";
         $this->_curl->setUrl ($url);
+        $this->_curl->setBody ("GET", null);
         return $this->_send_request ($server);
     }
 
     public function getForgingStatus ($server, $publicKey) {
-        $url = "https://{$server->ip}:{$server->port}/api/delegates/forging/status?publicKey={$publicKey}";
-        $this->_curl->setPost (null);
+        $url = "{$server->scheme}://{$server->ip}:{$server->port}/api/node/status/forging?publicKey={$publicKey}";
         $this->_curl->setUrl ($url);
+        $this->_curl->setBody ("GET", null);
         return $this->_send_request ($server);
     }
 
-    public function disableForging ($server, $secret) {
-        $url = "https://{$server->ip}:{$server->port}/api/delegates/forging/disable";
-        $post = array (
-            'secret' => $secret
-        );
-
+    public function disableForging ($server, $password, $publicKey) {
+        $url = "{$server->scheme}://{$server->ip}:{$server->port}/api/node/status/forging";
+        $body = "{\"forging\": false, \"password\": \"{$password}\",\"publicKey\": \"{$publicKey}\"}";
         $this->_curl->setUrl ($url);
-        $this->_curl->setPost ($post);
+        $this->_curl->setBody ("PUT", $body);
         return $this->_send_request ($server);
     }
 
-    public function enableForging ($server, $secret) {
-        $url = "https://{$server->ip}:{$server->port}/api/delegates/forging/enable";
-        $post = array (
-            'secret' => $secret
-        );
-
+    public function enableForging ($server, $password, $publicKey) {
+        $url = "{$server->scheme}://{$server->ip}:{$server->port}/api/node/status/forging";
+        $body = "{\"forging\": true, \"password\": \"{$password}\",\"publicKey\": \"{$publicKey}\"}";
         $this->_curl->setUrl ($url);
-        $this->_curl->setPost ($post);
+        $this->_curl->setBody ("PUT", $body);
         return $this->_send_request ($server);
     }
 }

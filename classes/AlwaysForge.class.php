@@ -42,7 +42,7 @@ class AlwaysForge {
         }
 
         # Set delegate
-        if (!empty ($config->delegate) && $config->delegate->address && $config->delegate->publicKey && $config->delegate->secret) {
+        if (!empty ($config->delegate) && $config->delegate->address && $config->delegate->publicKey && $config->delegate->password) {
             $this->_delegate = $config->delegate;
         } else {
             Logger::log (Logger::SYNTAX, "No delegate or invalid delegate supplied");
@@ -92,7 +92,7 @@ private function _switch_forging ($forging_server) {
     foreach ($this->_servers as $server) {
         if ($server->name !== $forging_server->name && $server->isForgingEnabled) {
             Logger::log (Logger::DEBUG, "[{$server->name}] Disabling forging...");
-            $result = $this->_api->disableForging ($server, $this->_delegate->secret);
+            $result = $this->_api->disableForging ($server, $this->_delegate->password, $this->_delegate->publicKey);
             if ($result) {
                 Logger::log (Logger::OK, "[{$server->name}] Forging disabled");
             } else {
@@ -107,7 +107,7 @@ private function _switch_forging ($forging_server) {
     }
 
     Logger::log (Logger::DEBUG, "[{$forging_server->name}] Enabling forging...");
-    $result = $this->_api->enableForging ($forging_server, $this->_delegate->secret);
+    $result = $this->_api->enableForging ($forging_server, $this->_delegate->password, $this->_delegate->publicKey);
     if ($result) {
         Logger::log (Logger::OK, "[{$forging_server->name}] Forging enabled");
         return true;
@@ -138,24 +138,24 @@ private function _switch_forging ($forging_server) {
             $status = $this->_api->getStatus ($server);
             $server->priority = $key;
             if ($status) {
-                $server->status = $status;
-                $server->isAlive = true;
+                $server->status = $status->data;
+                $server->isAlive = 1;
 
                 # Checking if forging is enabled on server
                 $forging_status = $this->_api->getForgingStatus ($server, $this->_delegate->publicKey);
                 if ($forging_status) {
-                    $server->isForgingEnabled = $forging_status->enabled;
+                    $server->isForgingEnabled = $forging_status->data[0]->forging ? 1 : 0;
                 } else {
-                    $server->isForgingEnabled = false;
-                    $server->isAlive = false;
+                    $server->isForgingEnabled = 0;
+                    $server->isAlive = 0;
                 }
 
-                $log = "[$server->name] Alive: {$server->isAlive}, Forging: {$server->isForgingEnabled}, Pririty: {$server->priority}, Syncing: {$server->status->syncing}, Broadhash: {$server->status->broadhash}, Height: {$server->status->height}, Consensus: {$server->status->consensus}";
+                $log = "[$server->name] A: {$server->isAlive}, F: {$server->isForgingEnabled}, P: {$server->priority}, H: {$server->status->height}, C: {$server->status->consensus}";
             } else {
-                $server->isAlive = false;
-                $server->isForgingEnabled = false;
+                $server->isAlive = 0;
+                $server->isForgingEnabled = 0;
 
-                $log = "[$server->name] A: {$server->isAlive} F: {$server->isForgingEnabled} P: {$server->priority}";
+                $log = "[$server->name] A: {$server->isAlive}, F: {$server->isForgingEnabled}, P: {$server->priority}";
             }
             Logger::log (Logger::INFO, $log);
         }

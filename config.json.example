@@ -1,6 +1,6 @@
 {
     "log_level": "info",
-    "check_interval_sec": 1,
+    "check_interval_sec": 60,
     "timeouts": {
         "request_sec": 3,
         "connect_msec": 1000
@@ -8,18 +8,20 @@
     "delegate": {
         "address": "delegate_address",
         "publicKey": "delegate_publicKey",
-        "secret": "delegate_secret"
+        "password": "delegate_password"
     },
     "servers": [
         {
-            "name": "mainnet-1 #1",
+            "name": "node1",
+            "scheme": "http",
             "ip": "127.0.0.1",
-            "port": 8000
+            "port": 5000
         },
         {
-            "name": "mainnet-1 #2",
-            "ip": "127.0.0.1",
-            "port": 8001
+            "name": "node2",
+            "scheme": "http",
+            "ip": "a.b.c.d",
+            "port": 5000
         }
     ]
 }
