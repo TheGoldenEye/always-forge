@@ -1,8 +1,9 @@
 # always-forge
-**AlwaysForge** is PHP forging fail-over for **Lisk** cryptocurrency. It will monitor all your nodes in real-time and switch forging to best server available. It uses active (maybe a little too aggressive) approach and best practices.
+**AlwaysForge** is a PHP forging fail-over script for **Lisk** cryptocurrency. It will monitor all your nodes in real-time and switch "Forging" to best server available (based on consensus).
 
 ## Version:
 `2.0.0`
+
 This version **works only with the Lisk Core 1.0.0 codebase**, starting with Version 1.0.0-beta.9 (currently running in Lisk Betanet)
 For older Lisk versions 0.9.x (Mainnet & Testnet) please use the previous always-forge version 1.0 from 4miners https://github.com/4miners/always-forge
 
